@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit profile · Frostgram</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c1222;
+      --bg-elevated: #111827;
+      --surface: #1a2332;
+      --border: rgba(148, 163, 184, 0.18);
+      --border-strong: rgba(148, 163, 184, 0.35);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --success: #34d399;
+      --danger: #f87171;
+      --header-h: 54px;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(12, 18, 34, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .top-inner {
+      width: 100%;
+      max-width: 720px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .top-inner h1 {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 8px 10px 8px 6px;
+      margin-left: -8px;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-ghost {
+      padding: 8px 14px;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      padding: 8px 18px;
+      border: none;
+      background: linear-gradient(145deg, #0ea5e9 0%, #0284c7 100%);
+      color: #0c1222;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 16px 100px;
+    }
+
+    @media (min-width: 640px) {
+      main {
+        padding: 32px 24px 48px;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .card-section {
+      padding: 22px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Avatar */
+    .avatar-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+    }
+
+    @media (min-width: 520px) {
+      .avatar-row {
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+      }
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--bg-elevated);
+      border: 3px solid var(--border-strong);
+      display: block;
+    }
+
+    .avatar-fallback {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1e3a5f, #0f172a);
+      border: 3px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .avatar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    @media (min-width: 520px) {
+      .avatar-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    .btn-avatar {
+      padding: 8px 14px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      color: var(--accent);
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .btn-avatar:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .btn-remove {
+      color: var(--danger);
+      border-color: rgba(248, 113, 113, 0.35);
+      background: transparent;
+    }
+
+    .btn-remove:hover {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: var(--danger);
+    }
+
+    .avatar-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      max-width: 280px;
+    }
+
+    @media (min-width: 520px) {
+      .avatar-hint {
+        max-width: none;
+      }
+    }
+
+    input[type="file"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Form fields */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .char-count {
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+    }
+
+    .char-count.warn {
+      color: #fbbf24;
+    }
+
+    .char-count.over {
+      color: var(--danger);
+    }
+
+    input[type="text"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      color: var(--text);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .field-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .readonly {
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+
+    .grid-2 {
+      display: grid;
+      gap: 18px;
+    }
+
+    @media (min-width: 520px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Toggles */
+    .toggle-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toggle-row:first-of-type {
+      padding-top: 0;
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .toggle-text strong {
+      display: block;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .toggle-text span {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .switch-slider::before {
+      content: "";
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 2px;
+      top: 2px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .switch input:checked + .switch-slider {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    .switch input:checked + .switch-slider::before {
+      transform: translateX(20px);
+      background: var(--accent);
+    }
+
+    .switch input:focus-visible + .switch-slider {
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      padding: 12px 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.25s;
+      z-index: 200;
+      max-width: calc(100vw - 32px);
+      text-align: center;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: rgba(52, 211, 153, 0.45);
+      color: var(--success);
+    }
+
+    /* Mobile save bar */
+    .mobile-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(12, 18, 34, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      z-index: 90;
+    }
+
+    .mobile-bar .btn {
+      flex: 1;
+      max-width: 160px;
+      padding: 12px 16px;
+    }
+
+    @media (min-width: 640px) {
+      .mobile-bar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .header-actions .btn-ghost,
+      .header-actions .btn-primary {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="top-inner">
+      <a href="{{url_for('profile.goto')}}" class="back-link" aria-label="Back to home"> <!-- maybe here be problem-->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        Home
+      </a>
+      <h1>Edit profile</h1>
+      <div class="header-actions">
+        <button type="button" class="btn btn-ghost" id="btnCancelHeader">Cancel</button>
+        <button type="submit" form="profile-form" class="btn btn-primary" id="btnSaveHeader">Save</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <form id="profile-form" class="card" method="POST" enctype="multipart/form-data"  >
+      <!--image-->
+      <div class="card-section">
+        <p class="section-title">Photo</p>
+        <div class="avatar-row">
+          <div class="avatar-wrap">
+            <img id="avatarImg" class="avatar" src="" alt="" hidden />
+            <div id="avatarFallback" class="avatar-fallback">No photo</div>  <!-- Add it here -->
+          </div>
+          <div>
+            <div class="avatar-actions">
+              <label for="avatarInput" class="btn-avatar">Change photo</label>
+              <input type="file" name="image" id="avatarInput" accept="image/jpeg,image/png,image/webp,image/gif" />
+              <button type="button" class="btn-avatar btn-remove" id="btnRemovePhoto">Remove</button>
+            </div>
+            <p class="avatar-hint">JPG, PNG, WebP or GIF. Max 8 MB recommended. Square photos look best.</p>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="card-section">
+        <p class="section-title">About you</p>
+        
+        <div class="grid-2">
+          <div class="field">
+            <label for="displayName">Display name</label>
+            <input type="text" id="displayName" name="displayName" maxlength="50" placeholder="How your name appears" autocomplete="name" value="Frost User" />
+          </div>
+          
+          <div class="field"><!--dont need in database-->
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" class="readonly" value="frost_user" readonly aria-describedby="username-hint" />
+            <p id="username-hint" class="field-hint">Username can be changed once every 14 days in account settings.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="bio">Bio</label>
+            <span class="char-count" id="bioCount" aria-live="polite">0 / 150</span>
+          </div>
+          <textarea id="bio" name="bio" maxlength="150" rows="4" placeholder="Tell people what you’re about — hobbies, links in text, or a short intro."></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="website">Website</label>
+            <input type="url" id="website" name="website" placeholder="https://yoursite.com" autocomplete="url" />
+          </div>
+          <div class="field">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" maxlength="80" placeholder="City, country" autocomplete="address-level2" />
+          </div>
+        </div>
+       <!--dont need in database pronouns-->
+        <div class="grid-2">
+          <div class="field">
+            <label for="pronouns">Pronouns</label>
+            <select id="pronouns" name="pronouns">
+              <option value="">Prefer not to say</option>
+              <option value="they/them">they/them</option>
+              <option value="she/her">she/her</option>
+              <option value="he/him">he/him</option>
+              <option value="other">Other / custom</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="customPronouns">Custom pronouns</label>
+            <input type="text" id="customPronouns" name="customPronouns" maxlength="40" placeholder="e.g. xe/xem" disabled />
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-section">
+        <p class="section-title">Privacy</p>
+        <div class="toggle-row">
+          <div class="toggle-text">
+            <strong>Private account</strong>
+            <span>Only approved followers see your posts and full profile.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="private" id="togglePrivate" />
+            <span class="switch-slider" aria-hidden="true"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-text">
+            <strong>Show activity status</strong>
+            <span>Let people you follow see when you’re active.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="activity" id="toggleActivity" checked />
+            <span class="switch-slider" aria-hidden="true"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-text">
+            <strong>Allow mentions from everyone</strong>
+            <span>Anyone can @mention you. Turn off to limit to followers only.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="mentions" id="toggleMentions" checked />
+            <span class="switch-slider" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
+      <div class="mobile-bar" role="presentation">
+          <button type="button" class="btn btn-ghost" id="btnCancelMobile">Cancel</button>
+          <button type="submit" form="profile-form" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </main>
+
+ 
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (function () {
+    var maxBio = 150;
+    var bio = document.getElementById("bio");
+    var bioCount = document.getElementById("bioCount");
+    var avatarInput = document.getElementById("avatarInput");
+    var avatarImg = document.getElementById("avatarImg");
+    var avatarFallback = document.getElementById("avatarFallback");
+    var btnRemovePhoto = document.getElementById("btnRemovePhoto");
+    var pronouns = document.getElementById("pronouns");
+    var customPronouns = document.getElementById("customPronouns");
+    var objectUrl = null;
+
+    function updateBioCount() {
+      var n = bio.value.length;
+      bioCount.textContent = n + " / " + maxBio;
+      bioCount.classList.remove("warn", "over");
+      if (n >= maxBio) bioCount.classList.add("over");
+      else if (n >= maxBio - 20) bioCount.classList.add("warn");
+    }
+
+    function setAvatarFromFile(file) {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        objectUrl = null;
+      }
+      if (!file || !file.type.startsWith("image/")) return;
+      objectUrl = URL.createObjectURL(file);
+      avatarImg.src = objectUrl;
+      avatarImg.alt = "Profile preview";
+      avatarImg.hidden = false;
+      avatarFallback.hidden = true;
+    }
+
+    function clearAvatar() {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        objectUrl = null;
+      }
+      avatarInput.value = "";
+      avatarImg.removeAttribute("src");
+      avatarImg.hidden = true;
+      avatarFallback.hidden = false;
+    }
+
+    function syncPronouns() {
+      var custom = pronouns.value === "other";
+      customPronouns.disabled = !custom;
+      if (!custom) customPronouns.value = "";
+    }
+
+    bio.addEventListener("input", updateBioCount);
+    updateBioCount();
+
+    avatarInput.addEventListener("change", function () {
+      var f = avatarInput.files && avatarInput.files[0];
+      if (f) setAvatarFromFile(f);
+    });
+
+    btnRemovePhoto.addEventListener("click", clearAvatar);
+
+    pronouns.addEventListener("change", syncPronouns);
+    syncPronouns();
+
+    function goBack() {
+      if (history.length > 1) history.back();
+      else window.location.href = "/home";
+    }
+
+    document.getElementById("btnCancelHeader").addEventListener("click", goBack);
+    document.getElementById("btnCancelMobile").addEventListener("click", goBack);
+
+    // form submits naturally to Flask now — no preventDefault
+  })();
+</script>
+</body>
+</html>

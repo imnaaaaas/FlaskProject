@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile -Shugram </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .nav-logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-icon {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .nav-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: #475569;
+        }
+
+        .nav-icon:hover svg {
+            stroke: #3b82f6;
+        }
+
+        .profile-container {
+            max-width: 975px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 25px;
+        }
+
+        .profile-info {
+            display: flex;
+            gap: 80px;
+            margin-bottom: 35px;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;    
+            object-fit: cover;       
+            flex-shrink: 0;
+        }
+        
+        .profile-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .avatar-fallback {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: #ccc;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          flex-shrink: 0;
+        }
+        
+        .profile-details {
+            flex: 1;
+        }
+
+        .profile-username {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .profile-username h1 {
+            font-size: 28px;
+            font-weight: 400;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-edit:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-settings {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .btn-settings svg {
+            width: 24px;
+            height: 24px;
+            stroke: #64748b;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            gap: 5px;
+            font-size: 16px;
+        }
+
+        .stat-item strong {
+            font-weight: 600;
+        }
+        .profile-bio {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .profile-bio h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .profile-bio p {
+            color: #475569;
+            font-size: 15px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .profile-bio .bio-location {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .profile-bio .bio-website {
+            color: #0095f6;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .profile-bio .bio-website:hover {
+            text-decoration: underline;
+        }
+
+        .profile-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 5px 0;
+            border-top: 1px solid transparent;
+            margin-top: -16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .tab.active {
+            color: #0f172a;
+            border-top-color: #0f172a;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #e0f2fe, #ddd6fe);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            color: white;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .overlay-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .overlay-stat svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ძალიან მნიშვნელოვანია */
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.07);
+        }
+        @media (max-width: 768px) {
+            .profile-info {
+                flex-direction: column;
+                gap: 30px;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-username {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .profile-tabs {
+                gap: 30px;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{url_for('profile.goto')}}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="4"/>
+                    <circle cx="12" cy="12" r="4"/>
+                    <circle cx="18" cy="6" r="1" fill="#3b82f6"/>
+                </svg>
+                Shugram 
+            </a>
+
+            <div class="nav-icons">
+                <a href="{{url_for('profile.goto')}}" class="nav-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-info">
+                <div class="">
+                    {% if profile and profile.image_path %}
+                      <img class="profile-avatar" src="{{ url_for('static', filename=profile.image_path) }}" alt="Profile photo" />
+                    {% else %}
+                      <div class="avatar-fallback">No photo</div>
+                    {% endif %}
+                </div>
+                
+                <div class="profile-details">
+                    <div class="profile-username">
+                        <h1>{{fullname}}  {{username}}</h1>
+                        <a href="{{url_for('editPost.editProfile')}}">
+                        <button class="btn btn-edit">Edit Profile</button>
+                        </a>
+                        <button class="btn-settings">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 6.36 4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.36-6.36 4.24-4.24"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <strong>245</strong>
+                            <span>posts</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>8,492</strong>
+                            <span>followers</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>1,203</strong>
+                            <span>following</span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-bio">
+                        <h2>{{ profile.display_name }}</h2>
+                        <p>{{ profile.bio }}</p>
+                        {% if profile.location %}
+                            <p class="bio-location">📍 {{ profile.location }}</p>
+                        {% endif %}
+                        {% if profile.website %}
+                            <a class="bio-website" href="{{ profile.website }}" target="_blank">🔗 {{ profile.website }}</a>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- posts/saved/tags-->
+            <div class="profile-tabs">
+                <div class="tab active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    Posts
+                </div>
+                <div class="tab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Saved
+                </div>
+                <div class="tab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="10" r="3"/>
+                        <path d="M6.168 18.849A4 4 0 0 1 10 16h4a4 4 0 0 1 3.834 2.855"/>
+                    </svg>
+                    Tagged
+                </div>
+            </div>
+
+        </div>
+
+        <!-- posts-->
+         {% for post in posts%}
+        <div class="gallery">
+            <div class="gallery-item">
+                  <img src="{{ url_for('static', filename=post.image_path) }}" alt="/" />
+                <div class="overlay">
+                    <div class="overlay-stat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                            2,847
+                        </div>
+                        <div class="overlay-stat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            124
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor%}
+        </div>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

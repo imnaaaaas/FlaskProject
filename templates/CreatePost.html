@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Post · Frostgram</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #151923;
+      --surface-elevated: #1c2130;
+      --border: rgba(148, 163, 184, 0.12);
+      --border-hover: rgba(148, 163, 184, 0.25);
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-tertiary: #64748b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-light: rgba(59, 130, 246, 0.1);
+      --success: #10b981;
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 14, 26, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .header-content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .btn-back:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+      background: var(--surface);
+    }
+    
+    .btn-back svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .header-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    
+    .btn-header {
+      padding: 8px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .btn-header:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+      background: var(--surface);
+    }
+    
+    /* Main Container */
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+    
+    .create-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    
+    /* Image Upload Section */
+    .upload-section {
+      position: relative;
+    }
+    
+    .drop-zone {
+      position: relative;
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .drop-zone:hover {
+      background: linear-gradient(135deg, #1e293b 0%, #1e3a5f 100%);
+    }
+    
+    .drop-zone.dragging {
+      background: var(--accent-light);
+      border-bottom-color: var(--accent);
+    }
+    
+    .drop-zone.has-image {
+      padding: 0;
+      cursor: default;
+      background: #000;
+    }
+    
+    .drop-zone.has-image:hover {
+      background: #000;
+    }
+    
+    .file-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .drop-zone.has-image .file-input {
+      display: none;
+    }
+    
+    .upload-prompt {
+      text-align: center;
+      pointer-events: none;
+    }
+    
+    .drop-zone.has-image .upload-prompt {
+      display: none;
+    }
+    
+    .upload-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      padding: 16px;
+      background: var(--accent-light);
+      border-radius: 16px;
+      color: var(--accent);
+    }
+    
+    .upload-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .upload-prompt h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    
+    .upload-prompt p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    
+    .btn-browse {
+      padding: 10px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: white;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: background 0.2s;
+    }
+    
+    .btn-browse:hover {
+      background: var(--accent-hover);
+    }
+    
+    /* Image Preview */
+    .preview-container {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .drop-zone.has-image .preview-container {
+      display: block;
+    }
+    
+    .preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #000;
+    }
+    
+    .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, transparent 30%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .preview-container:hover .image-overlay {
+      opacity: 1;
+    }
+    
+    .image-actions {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .preview-container:hover .image-actions {
+      opacity: 1;
+    }
+    
+    .btn-image-action {
+      padding: 8px 14px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: white;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-image-action:hover {
+      background: rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Form Section */
+    .form-section {
+      padding: 24px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group:last-of-type {
+      margin-bottom: 0;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    
+    .form-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px 14px;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      resize: vertical;
+      transition: all 0.2s;
+    }
+    
+    .form-textarea::placeholder {
+      color: var(--text-tertiary);
+    }
+    
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-tertiary);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    
+    .char-count {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      text-align: right;
+    }
+    
+    /* Action Buttons */
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .btn-cancel {
+      flex: 1;
+      padding: 12px 20px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .btn-cancel:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+      background: var(--surface-elevated);
+    }
+    
+    .btn-submit {
+      flex: 2;
+      padding: 12px 20px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: white;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-submit:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-submit:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-submit.uploading {
+      pointer-events: none;
+    }
+    
+    .btn-submit-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    
+    .btn-submit.uploading .spinner {
+      display: block;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Empty State */
+    .empty-hint {
+      margin-top: 24px;
+      padding: 16px;
+      background: var(--accent-light);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    .empty-hint strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+      main {
+        padding: 20px 16px 40px;
+      }
+      
+      .header-content {
+        padding: 0 16px;
+      }
+      
+      .header-title {
+        font-size: 1rem;
+      }
+      
+      .form-section {
+        padding: 20px;
+      }
+      
+      .drop-zone {
+        aspect-ratio: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header  class="header" >
+    <div class="header-content">
+      <div class="header-left">
+        <a class="btn-back" href="{{url_for('profile.goto')}}">
+          Back
+        </a>
+        <h1 class="header-title">Create Post</h1>
+      </div>
+      <a class="btn-header" href="{{url_for('admin.logout')}}">Logout</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ✅ FIXED FORM -->
+    <form id="postForm" method="POST" action="/create" enctype="multipart/form-data">
+
+      <div class="upload-section">
+        <div class="drop-zone" id="dropZone">
+          <input type="file" name="image" id="fileInput" class="file-input" accept="image/*" required>
+
+          <div class="upload-prompt">
+            <h3>Upload a photo</h3>
+            <button type="button" class="btn-browse">Browse Files</button>
+          </div>
+
+          <div class="preview-container" id="previewContainer">
+            <img id="previewImg" class="preview-img">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label for="caption">Caption</label>
+          <textarea 
+            id="caption" 
+            name="caption" 
+            class="form-textarea"
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <a href="{{url_for('profile.goto')}}" class="btn-cancel">Cancel</a>
+
+          <!-- ✅ FIXED BUTTON (NO <a>) -->
+              <button type="submit" class="btn-submit" id="submitBtn">
+                  Share Post
+              </button>
+          
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+</body>
+
+<script>
+    (function() {
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const previewContainer = document.getElementById('previewContainer');
+      const previewImg = document.getElementById('previewImg');
+      const changeBtn = document.getElementById('changeBtn');
+      const removeBtn = document.getElementById('removeBtn');
+      const submitBtn = document.getElementById('submitBtn');
+      const submitText = document.getElementById('submitText');
+      const captionArea = document.getElementById('caption');
+      const charCount = document.getElementById('charCount');
+      const emptyHint = document.getElementById('emptyHint');
+      const postForm = document.getElementById('postForm');
+      
+      let objectUrl = null;
+      
+      // Character counter
+      captionArea.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = `${count} / 2200`;
+      });
+      
+      // Set preview
+      function setPreview(file) {
+        if (!file || !file.type.match(/^image\//)) {
+          alert('Please select a valid image file');
+          return;
+        }
+        
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+        }
+        
+        objectUrl = URL.createObjectURL(file);
+        previewImg.src = objectUrl;
+        dropZone.classList.add('has-image');
+        submitBtn.disabled = false;
+        emptyHint.style.display = 'none';
+      }
+      
+      // Remove image
+      function removeImage() {
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+          objectUrl = null;
+        }
+        
+        fileInput.value = '';
+        previewImg.src = '';
+        dropZone.classList.remove('has-image');
+        submitBtn.disabled = true;
+        emptyHint.style.display = 'block';
+      }
+      
+      // File input change
+      fileInput.addEventListener('change', function() {
+        const file = fileInput.files?.[0];
+        if (file) setPreview(file);
+      });
+      
+      // Change button
+      changeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        fileInput.click();
+      });
+      
+      // Remove button
+      removeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        removeImage();
+      });
+      
+      // Drag and drop
+      dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!dropZone.classList.contains('has-image')) {
+          dropZone.classList.add('dragging');
+        }
+      });
+      
+      dropZone.addEventListener('dragleave', function() {
+        dropZone.classList.remove('dragging');
+      });
+      
+      dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragging');
+        
+        const file = e.dataTransfer.files?.[0];
+        if (file && !dropZone.classList.contains('has-image')) {
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          fileInput.files = dataTransfer.files;
+          setPreview(file);
+        }
+      });
+      
+      // Form submission
+      postForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!fileInput.files?.[0]) {
+          alert('Please select an image to share');
+          return;
+        }
+        
+        // Show uploading state
+        submitBtn.classList.add('uploading');
+        submitBtn.disabled = true;
+        submitText.textContent = 'Uploading...';
+        
+        // Simulate upload (replace with actual upload logic)
+        setTimeout(function() {
+          alert('Post shared successfully! 🎉');
+          // In real app: window.location.href = 'instagram-home.html';
+          
+          // Reset form
+          submitBtn.classList.remove('uploading');
+          submitBtn.disabled = false;
+          submitText.textContent = 'Share Post';
+        }, 1500);
+      });
+      
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', function() {
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+        }
+      });
+    })();
+  </script>
+  
+  </html>
