@@ -350,7 +350,7 @@
         }
     </style>
 </head>
-<body>
+<body >
     <nav class="navbar">
         <div class="nav-container">
             <a href="{{url_for('profile.goto')}}" class="nav-logo">
@@ -480,7 +480,85 @@
         </div>
     </div>
 
+<!-- only this script, nothing else -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
+        const socket = io();
+        const OTHER_USER_ID = parseInt(document.body.dataset.otherUserId);
+        const CURRENT_USER_ID = parseInt(document.body.dataset.currentUserId);
+
+        const messageButton = document.querySelector('.btn-message');
+        const chatWidget = document.getElementById('chatWidget');
+        const chatClose = document.getElementById('chatClose');
+        const chatBody = document.querySelector('.chat-body');
+        const chatInput = document.querySelector('.chat-input');
+        const chatSend = document.querySelector('.chat-send');
+
+        let conversationId = null;
+
+        messageButton.addEventListener('click', async () => {
+            chatWidget.classList.remove('hidden');
+
+            const res = await fetch(`/conversation/${OTHER_USER_ID}`);
+            const data = await res.json();
+
+            conversationId = data.conversation_id;
+            chatBody.innerHTML = '';
+            data.messages.forEach(m => appendMessage(m.content, m.is_mine, m.timestamp));
+
+            socket.emit('join', { conversation_id: conversationId });
+            chatInput.focus();
+        });
+
+        chatClose.addEventListener('click', () => chatWidget.classList.add('hidden'));
+
+        document.addEventListener('click', (event) => {
+            if (chatWidget.classList.contains('hidden')) return;
+            if (!chatWidget.contains(event.target) && !messageButton.contains(event.target)) {
+                chatWidget.classList.add('hidden');
+            }
+        });
+
+        function sendMessage() {
+            const content = chatInput.value.trim();
+            if (!content || !conversationId) return;
+            socket.emit('send_message', { conversation_id: conversationId, content });
+            chatInput.value = '';
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+        socket.on('new_message', (data) => {
+            const isMe = data.sender_id === CURRENT_USER_ID;
+            appendMessage(data.content, isMe, data.timestamp);
+        });
+
+        function appendMessage(content, isMe, time) {
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = `
+                display: flex;
+                justify-content: ${isMe ? 'flex-end' : 'flex-start'};
+                margin-bottom: 8px;
+            `;
+            wrapper.innerHTML = `
+                <div style="
+                    max-width: 75%;
+                    background: ${isMe ? '#2563eb' : '#1a1f29'};
+                    color: #f1f5f9;
+                    border-radius: ${isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px'};
+                    padding: 8px 12px;
+                    font-size: 13px;
+                    border: 1px solid ${isMe ? '#1d4ed8' : '#2f3744'};
+                ">
+                    <div>${content}</div>
+                    <div style="font-size:10px;color:#94a3b8;margin-top:4px;text-align:right">${time}</div>
+                </div>
+            `;
+            chatBody.appendChild(wrapper);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => {
             tab.addEventListener('click', function() {

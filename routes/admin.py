@@ -7,7 +7,11 @@ admin = Blueprint("admin",__name__)
 
 @admin.route("/view")
 def view_users():
-    return render_template("View.html",values=User.query.all(),posts=Post.query.all(),profiles=Profile.query.all())
+    return render_template("View.html",
+                           values=User.query.all(),
+                           posts=Post.query.all(),
+                           profiles=Profile.query.all(),
+                           )
 
 
 @admin.route("/logout")

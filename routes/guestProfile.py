@@ -18,4 +18,6 @@ def guestProfile(user_id):
     return render_template("GuestProfile.html",
                            all_posts=all_posts,
                            user_profile=user_profile,
-                           fullname=user_profile.user.fullname if user_profile else "")
+                           fullname=user_profile.user.fullname if user_profile else "",
+                           profile_user_id=user_id,              # ← add this
+                           current_user_id=logged_in_user_id)    # ← add this

@@ -30,7 +30,7 @@ def register():
             db.session.add(new_profile)
             db.session.commit()
 
-            session.permanent = True
+            session.permanent = False  
             session["user_id"] = new_user.id
             session["fullname"] = fullname
             session["username"] = username
@@ -52,7 +52,7 @@ def login():
         print(found_user)  
         if found_user:
             if check_password_hash(found_user.password, password):
-                session.permanent = True
+                session.permanent = False  
                 session["user_id"] = found_user.id 
                 session["fullname"] = found_user.fullname
                 session["username"] = found_user.username
